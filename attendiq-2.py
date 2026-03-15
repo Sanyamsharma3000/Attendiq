@@ -1,6 +1,6 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, send_file
 from flask_cors import CORS
-import requests, re
+import requests, re, os
 from bs4 import BeautifulSoup
 
 app = Flask(__name__)
@@ -10,6 +10,20 @@ BASE = "https://agclms.in"
 @app.route("/")
 def home():
     return open("index.html").read()
+
+@app.route("/manifest.json")
+def manifest():
+    return send_file("manifest.json", mimetype="application/json")
+
+@app.route("/sw.js")
+def sw():
+    return send_file("sw.js", mimetype="application/javascript")
+
+@app.route("/icon.png")
+def icon():
+    if os.path.exists("icon.png"):
+        return send_file("icon.png", mimetype="image/png")
+    return "", 404
 
 @app.route("/api/sync", methods=["POST"])
 def sync():
